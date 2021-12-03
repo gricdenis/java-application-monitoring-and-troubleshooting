@@ -34,6 +34,7 @@ Installation at Windows:
 Installation at Windows:
 1. Download distribution: [default latest version](https://github.com/visualvm/visualvm.src/releases/download/2.0.3/visualvm_203.zip)
 1. Unpack distribution to folder by your choice (e.g. "C:\Program Files\")
+1. Install plugins "Visual GC", "VisualVM-XXX" and "Tracer-XXX"
 
 - [ ] [IntelliJ IDEA CE](https://www.jetbrains.com/idea/download) latest Community Edition
 Installation at Windows:
@@ -172,7 +173,7 @@ vi ~/.m2/settings-security.xml
 
 ### When
 - [x] Project application built locally with IDEA's built-in maven `mvn clean verify [-DskipTests]`
-- [ ] _OR_ found in `iaac/roles/target_app/files`
+- [ ] _OR_ built JAR found in `iaac/roles/target_app/files`
 - [ ] Project application ran locally with CLI
 ```shell script
 java \
@@ -202,6 +203,7 @@ windows> taskmgr
 
 ### After debrief
 - [ ] Application architecture overview
+- [ ] [Java Command Line Inspector](https://jacoline.dev/inspect)
 
 ---
 
@@ -425,9 +427,9 @@ profiler --> application
 
 ## Hands-on quest: Modern application _remote_ building, running and monitoring (50m)
 ### Given
-- [ ] SSH user session with domain account to [{{ prod host }}](iaac/inventories/production/hosts.yml) `ssh account@s-msk-t-jvm-XXX`
+- [ ] SSH user session with domain account to [{{ prod host }}](iaac/inventories/production/hosts.yml) `ssh {{ account }}@s-msk-t-jvm-XXX`
 
-- [ ] Demo Application codebase cloned remotely
+- [x] Demo Application codebase cloned remotely
 ```shell script
 cd /opt
 sudo git clone --depth 1 --branch master https://github.com/eugene-krivosheyev/agile-practices-application
@@ -435,12 +437,12 @@ sudo chown {{ account }}:users -R agile-practices-application
 cd agile-practices-application
 ```
 
-- [ ] Made Maven able to run with given user
+- [x] Made Maven able to run with given user
 ```shell script
 chmod a+x -R /opt/maven
 ```
 
-- [ ] Credentials for corporate Maven Artifactory repo set up
+- [x] Credentials for corporate Maven Artifactory repo set up
 ```shell script
 mkdir ~/.m2
 cp /opt/maven/settings-security.xml ~/.m2/
@@ -448,13 +450,13 @@ mvn --encrypt-master-password {{ trainer_given_master_password }}
 vi ~/.m2/settings-security.xml
 ```
 
-- [ ] Demo Application built remotely
+- [x] Demo Application built remotely
 ```shell script
 cd /opt/agile-practices-application
 mvn clean verify [-DskipTests]
 ```
 
-- [ ] External Legacy System REST stub started
+- [x] External Legacy System REST stub started
 ```shell script
 cd target/test-classes # cat mappings/legacyAccountingSystemResponse.json
 java -jar wiremock-jre8-standalone-2.31.0.jar --port 8888 [--verbose] & # curl localhost:8888/api/account
@@ -489,15 +491,15 @@ nohup \
 cd java-application-monitoring-and-troubleshooting
 jmeter -t load.jmx -j log/jmeter/jmeter.log # GUI mode
 ```
-- Read _constants_ section
-- Set up ${PROD_HOST} constant
-- Toggled on _setup_ test plan entry
-- Shown entry _setup_/Summary Report
-- Menu: Run/Start
-- Wait while got samples of ${CLIENTS} constant count
-- Toggled off _setup_ test plan entry
-- Toggled on _reporting-users_, _admin-users_, _operations-users_ test plan entries
-- Test plan saved
+1. Read _constants_ section
+1. Set up ${PROD_HOST} constant
+1. Toggled on _setup_ test plan entry
+1. Shown entry _setup_/Summary Report
+1. Menu: Run/Start
+1. Wait while got samples of ${CLIENTS} constant count
+1. Toggled off _setup_ test plan entry
+1. Toggled on _reporting-users_, _admin-users_, _operations-users_ test plan entries
+1. Test plan saved
 
 - [ ] Local load emulation ran
 ```shell script
@@ -507,6 +509,8 @@ jmeter -n -t load.jmx -j log/jmeter/jmeter.log -l log/jmeter/jmeter.jtl -e -o lo
 ```
 
 ### When
+- [ ] [Java Command Line Inspector](https://jacoline.dev/inspect) used to analyse application startup command line
+
 - [ ] CLI tools used at {{ prod }}
 ```shell script
 uname --all
@@ -564,8 +568,8 @@ http://{{ prod }}:9090/graph
 http://{{ prod }}:9090/graph?g0.range_input=15m&g0.tab=0&g0.expr=http_server_requests_seconds_count
 
 http://{{ prod }}:3000
-```
-
+```  
+  
 ### Finally
 - [ ] JMeter load emulation stopped at dev station after ${TEST_DURATION_SEC}
 - [ ] Application gracefully stopped at {{ prod }} `curl --request POST http://{{ prod }}:8080/dbo/actuator/shutdown`
@@ -585,7 +589,7 @@ http://{{ prod }}:3000
 
 ### After debrief
 - [ ] Updated your custom Grafana dashboard with metrics you think is important `http://{{ prod }}:3000`
-- [ ] Recommendations on informational architecture  
+- [ ] Full [JVM Options Explorer](https://chriswhocodes.com/vm-options-explorer.html) added to bookmarks
   
 ---
 
@@ -635,6 +639,7 @@ http://{{ prod }}:3000
 - Performance-happy path: 0 -> 3 -> 4
 - Trivial Method: 0 -> {2,3} -> 1 
 - Deoptimization -> level 0 (_not entrant_ or _zombie_ code)
+
 ### Optimization examples
 - [ ] Dead code elimination
 - [ ] Inlining
@@ -690,6 +695,8 @@ jconsole://{{ prod }}:9999/Memory/Code cache
 jconsole://{{ prod }}:9999/MBeans
 ```
 
+- [x] [jitwatch](https://github.com/AdoptOpenJDK/jitwatch/wiki) tool used 
+  
 ### Finally
 - [ ] JMeter load emulation stopped
 - [ ] Application gracefully stopped
@@ -945,7 +952,8 @@ http://{{ prod }}:9090/graph
 | [Epsilon](http://openjdk.java.net/jeps/318) | No-Op Garbage Collector| Test and research oriented. | n/a | + | + | `-XX:+UnlockExperimentalVMOptions -XX:+UseEpsilonGC` |
 | ZGC | Scalable low latency *concurrent* garbage collector. | Latency oriented. Pauses no more 10ms. | n/a | ? | ? |
 | Shenandoah | Scalable low latency *concurrent* garbage collector.| Latency oriented. | ?? | ?? | ?? |
-
+[Actual collectors by JVM vendor and version](https://chriswhocodes.com/gc-explorer.html)
+  
 ### [G1 tuning](https://www.oracle.com/technical-resources/articles/java/g1gc.html)
 - [ ] Multi-regional: `-XX:G1HeapRegionSize=n`, value will be a power of two and can range from 1MB to 32MB. The goal is to have around 2048 regions based on the minimum Java heap size
 - [ ] _Dynamic_ multi-regional: regions made E,S,O dynamically at run-time 
