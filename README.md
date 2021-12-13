@@ -649,6 +649,7 @@ http://{{ prod }}:3000
 - [ ] Classes compiled -> commited code cache size
 - [ ] Startup time
 - [ ] Application throughput as f(warmup time)
+`CodeCache is full. Compiler has been disabled.`
 
 ## Hands-on quest: JIT compilation monitoring (50m)
 ### Given
@@ -703,10 +704,8 @@ jconsole://{{ prod }}:9999/MBeans
 - [ ] Database filled up with tests data removed
 
 ### Then answered and reviewed at debrief
-- [ ] Compiled classes number 
-- [ ] Total compilation time
-- [ ] Is Code Cache full enough to begin worry about `CodeCache is full. Compiler has been disabled.`?
-- [ ] Is there Code Cache rolling after warm-up?
+- [ ] Did system warm-up while load?
+- [ ] Is Code Cache enough?
 
 ### After debrief
 - [ ] Updated your custom Grafana dashboard with metrics you think is important
