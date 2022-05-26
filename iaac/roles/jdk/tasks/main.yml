@@ -1,4 +1,0 @@
-- name: Install java-11-openjdk-devel or java-1.8.0-openjdk-devel
-  package:
-    state: present
-    name: java-1.8.0-openjdk-devel

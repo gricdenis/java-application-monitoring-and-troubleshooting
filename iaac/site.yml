@@ -1,71 +1,51 @@
 - hosts: prod
-  gather_facts: yes
+  gather_facts: no
   become: yes
-  environment: "{{ env_proxy | default('') }}"
+
+  tasks:
+    - name: Add software
+      dnf:
+        state: present
+        name:
+          - java-11-openjdk-devel
+          - docker
+
+    - name: Add working dir
+      file:
+        path: /opt/agile-practices-application
+        state: directory
+        owner: "{{ ansible_user }}"
+        mode: u+rw,g+rw,o+rw
+        recurse: yes
+
+    - name: Add prometheus config
+      template:
+        src: prometheus.yml.j2
+        dest: /opt/agile-practices-application/prometheus.yml
+        mode: a+r
+
+    - name: Docker repo login
+      command: docker login --username {{ ansible_user }} --password {{ ansible_pass }} artifactory.raiffeisen.ru
+
+    - name: Run node exporter
+      command: |
+        docker run --rm -d -p 9100:9100 
+        -v /sys:/host/sys:ro -v /proc:/host/proc:ro -v /:/rootfs:ro 
+        artifactory.raiffeisen.ru/ext-techimage-docker/prometheus/node-exporter:v1.1.1
+
+    - name: Run prometheus
+      command: |
+        docker run --rm -d -p 9090:9090 
+        -v /opt/agile-practices-application/prometheus.yml:/etc/prometheus/prometheus.yml:ro 
+        artifactory.raiffeisen.ru/ext-techimage-docker/prometheus/prometheus:v2.35.0
+
+    - name: Run grafana
+      command: |
+        docker run --rm -d -p 3000:3000 
+        artifactory.raiffeisen.ru/ext-techimage-docker/grafana:6.4.3 
+        
 
   roles:
-    - role: maven
-      tags: maven
-      maven_version: '3.6.3'
-
-    - role: cloudalchemy.prometheus
-      tags: prometheus
-      prometheus_scrape_configs:
-        - job_name: 'host'
-          static_configs:
-            - targets: ['localhost:9100']
-              labels:
-                env: prod
-        - job_name: 'app'
-          metrics_path: '/dbo/actuator/prometheus'
-          static_configs:
-            - targets: ['localhost:8080']
-              labels:
-                env: prod
-
-    - role: cloudalchemy.node-exporter
-      tags: node_exporter
-      node_exporter_version: '1.0.1'
-      node_exporter_enabled_collectors:
-        - processes
-        - systemd
-        - tcpstat
-        - meminfo_numa
-        - mountstats
-        - logind
-        - ksmd
-
-
-- hosts: prod
-  gather_facts: yes
-  become: yes
-  # should not use proxy environment
-
-  roles:
-    - role: git
-      tags: git
-
-    - role: jdk
-      tags: jdk
-
-    - role: grafana
-      tags: grafana
-      grafana_datasources:
-        - name: Prometheus
-          type: prometheus
-          url: "http://{{ inventory_hostname }}:9090"
-          basicAuth: false
-          access: proxy
-          isDefault: true
-
-    - role: curl
-      tags: curl
-
     - role: target_app
-      tags: target_app
-
     - role: wiremock_stub
-      tags: wiremock_stub
-
     - role: jmeter
-      tags: jmeter
