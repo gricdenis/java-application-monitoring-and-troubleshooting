@@ -1,6 +1,6 @@
 #!/bin/sh
 
-nohup \
+#nohup \
   java \
     -Xms512m -Xmx1G \
     -XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+UnlockExperimentalVMOptions \
@@ -18,4 +18,4 @@ nohup \
       --logging.level.org.hibernate.stat=ERROR \
       --logging.level.org.hibernate.SQL=ERROR \
       --spring.jpa.show-sql=false \
-> /dev/null 2>&1 &
+#> /dev/null 2>&1 &
