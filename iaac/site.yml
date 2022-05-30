@@ -48,4 +48,3 @@
   roles:
     - role: target_app
     - role: wiremock_stub
-    - role: jmeter

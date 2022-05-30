@@ -3,18 +3,7 @@ Playbook for production hosts
 
 Setup provisioning admin account
 --------------------------------
-`iaac/inventories/production/hosts.yml` 
-
-Setup Artifactory account for target hosts
-------------------------------------------
-`iaac/files/maven/settings.xml` 
-
-Setup corporate proxy
----------------------
-```cygwin shell
-export http_proxy=http://USER:PASSWORD@proxy:port
-export https_proxy=http://USER:PASSWORD@proxy:port
-```
+`iaac/inventories/production/hosts.yml`
 
 Smoke test Ansible connection
 -----------------------------
