@@ -196,8 +196,13 @@ windows> taskmgr
 - [ ] What is the default encoding for I/O?
 - [ ] Does the maximun heap size shown with JVisualVM correspond to -Xmx key?
 - [ ] What is the default heap size for app running?
-- [ ] How many java threads is active within JVM? 
+- [ ]       java -XshowSettings
+- [ ] How many java threads is active within JVM?
+- [ ]       http-nio-8080-exec
+- [ ]       server.tomcat.max...
+- [ ]       tomcat_threads_config_max_threads{name="http-nio-8080",} 100.0
 - [ ] How many OS threads is active within OS JVM process? 
+- [ ]       count of threads in OS process <> count of threads in JVM
 - [ ] What is the minimal possible heap size for app running?
 - [x] What is the difference for profiler times: Self time/Total time, CPU time?
 
