@@ -203,6 +203,8 @@ windows> taskmgr
 - [ ]       tomcat_threads_config_max_threads{name="http-nio-8080",} 100.0
 - [ ] How many OS threads is active within OS JVM process? 
 - [ ]       count of threads in OS process <> count of threads in JVM
+- [ ]       green threads
+- [ ]       OS thread pulling
 - [ ] What is the minimal possible heap size for app running?
 - [x] What is the difference for profiler times: Self time/Total time, CPU time?
 
