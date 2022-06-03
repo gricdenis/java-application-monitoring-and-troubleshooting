@@ -199,7 +199,7 @@ windows> taskmgr
 - [ ]       java -XshowSettings
 - [ ] How many java threads is active within JVM?
 - [ ]       http-nio-8080-exec
-- [ ]       server.tomcat.max...
+- [ ]       server.tomcat.threads.max
 - [ ]       tomcat_threads_config_max_threads{name="http-nio-8080",} 100.0
 - [ ] How many OS threads is active within OS JVM process? 
 - [ ]       count of threads in OS process <> count of threads in JVM
